@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "irrigation.failed.transactions.trials",
+  "type": "java.lang.String",
+  "description": "A description for 'irrigation.failed.transactions.trials'"
+}]}

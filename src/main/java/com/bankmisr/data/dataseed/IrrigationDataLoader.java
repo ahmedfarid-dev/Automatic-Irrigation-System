@@ -76,7 +76,6 @@ public class IrrigationDataLoader implements CommandLineRunner {
 			plot.setOwnerName("Ahmed abd el kareem");
 			plot.setArea(70);
 			plot.setLastIrragtionDate(LocalDateTime.now());
-			plot.setNextIrragtionDate(LocalDateTime.now().plusMinutes(5));
 		
 			//plot configurations
 			PlotConfiguration plotConfiguration = new PlotConfiguration();
@@ -86,6 +85,8 @@ public class IrrigationDataLoader implements CommandLineRunner {
 			plotConfiguration.setCurrentConfig(true);
 			plotConfiguration.setIrrigationRate(crop.getIrrigationRate());
 			plotConfiguration.setWaterAmount(crop.getWaterAmountUnit()*plot.getArea());
+			
+			plot.setNextIrragtionDate(LocalDateTime.now().plusMinutes(plotConfiguration.getIrrigationRate()));
 
 			plot.setPlotConfigurations(Set.of(plotConfiguration));
 			
@@ -106,13 +107,13 @@ public class IrrigationDataLoader implements CommandLineRunner {
 			irrigationTransaction3.setPlot(plot);
 			irrigationTransaction3.setIrragtionDate(LocalDateTime.now().minusDays(2));
 			irrigationTransaction3.setStatus(IrrigationTransactionStatus.FAILED);
-			irrigationTransaction3.setTrials(3);
+			irrigationTransaction3.setTrials(1);
 			
 			plot.setIrrigationTransactions(Set.of(irrigationTransaction1,irrigationTransaction2,irrigationTransaction3));
 			
 			//plot sensor
 			PlotSensor plotSensor = new PlotSensor();
-			plotSensor.setAvailable(true);
+			plotSensor.setAvailable(false);
 			
 			plot.setPlotSensor(plotSensor);
 			
