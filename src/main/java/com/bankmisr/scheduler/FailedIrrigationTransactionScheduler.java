@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import com.bankmisr.config.ApplicationConfig;
 import com.bankmisr.data.enums.IrrigationTransactionStatus;
 import com.bankmisr.data.model.IrrigationTransaction;
+import com.bankmisr.data.model.PlotAlert;
 import com.bankmisr.data.model.PlotConfiguration;
 import com.bankmisr.data.repositories.IrrigationTransactionRepository;
 import com.bankmisr.service.PlotSensorIntegration;
@@ -22,17 +23,16 @@ public class FailedIrrigationTransactionScheduler {
 	private static final Logger log = LoggerFactory.getLogger(FailedIrrigationTransactionScheduler.class);
 	
 	@Autowired
-	IrrigationTransactionRepository irrigationTransactionRepository;
+	private IrrigationTransactionRepository irrigationTransactionRepository;
 	
 	@Autowired
-	PlotSensorIntegration plotSensorIntegration;
+	private PlotSensorIntegration plotSensorIntegration;
 	
-	 @Autowired
-	 private ApplicationConfig applicationConfig;
+	@Autowired
+	private ApplicationConfig applicationConfig;
 	
 	@Scheduled(fixedRate = 5*60*1000)
 	public void ExecuteIrrigationTransactions() {
-		
 		
 		Set<IrrigationTransaction> failedIrrigationTransactions = irrigationTransactionRepository.findFailedIrrigationTransactions(applicationConfig.getIrrigationFailedTransactionTrialsConfig());
 		
@@ -45,6 +45,7 @@ public class FailedIrrigationTransactionScheduler {
 				
 				if(irrigationExecutionResult) {
 					irrigationTransaction.setStatus(IrrigationTransactionStatus.SUCCEDED);
+					irrigationTransaction.setTrials(0);
 					irrigationTransaction.getPlot().setLastIrragtionDate(LocalDateTime.now());
 					PlotConfiguration plotConfiguration = irrigationTransaction.getPlot().getPlotConfigurations().stream().filter(p -> p.isCurrentConfig()).toList().get(0);
 					irrigationTransaction.getPlot().setNextIrragtionDate(LocalDateTime.now().plusMinutes(plotConfiguration.getIrrigationRate()));
@@ -52,6 +53,16 @@ public class FailedIrrigationTransactionScheduler {
 				}else {
 					irrigationTransaction.setTrials(irrigationTransaction.getTrials()+1);
 					irrigationTransaction.setStatus(IrrigationTransactionStatus.FAILED);
+					
+					if(irrigationTransaction.getTrials() == applicationConfig.getIrrigationFailedTransactionTrialsConfig()) {
+						
+						PlotAlert plotAlert = new PlotAlert();
+						plotAlert.setCreationDate(LocalDateTime.now());
+						plotAlert.setPlot(irrigationTransaction.getPlot());
+						plotAlert.setIrrigationTransaction(irrigationTransaction);
+
+						irrigationTransaction.getPlot().getPlotAlerts().add(plotAlert);
+					}
 				}
 				irrigationTransactionRepository.save(irrigationTransaction);
 			});
