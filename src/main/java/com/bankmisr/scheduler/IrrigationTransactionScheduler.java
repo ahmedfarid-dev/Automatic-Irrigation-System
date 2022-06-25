@@ -35,7 +35,7 @@ public class IrrigationTransactionScheduler {
 	@Scheduled(fixedRate = 5*60*1000)
 	public void ExecuteIrrigationTransactions() {
 		
-		Set<Plot> plots = plotRepository.findPlotsToBeIrrigated(LocalDateTime.now().minusMinutes(5),LocalDateTime.now());
+		Set<Plot> plots = plotRepository.findPlotsToBeIrrigated(LocalDateTime.now().minusMinutes(5),LocalDateTime.now().plusSeconds(60));
 		
 		if(plots.isEmpty()) {
 			log.info("No Plots to be irrigated Now");

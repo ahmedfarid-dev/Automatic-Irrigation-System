@@ -54,6 +54,7 @@ public class PlotServiceImpl implements PlotService {
 		plotConfiguration.setWaterAmount(plotDto.getPlotConfiguration().getWaterAmount());
 		plotConfiguration.setIrrigationRate(plotDto.getPlotConfiguration().getIrrigationRate());
 		plotConfiguration.setCrop(crop.get());
+		plotConfiguration.setPlot(plot);
 		plotConfiguration.setCurrentConfig(true);
 		
 		plot.setPlotConfigurations(Set.of(plotConfiguration));

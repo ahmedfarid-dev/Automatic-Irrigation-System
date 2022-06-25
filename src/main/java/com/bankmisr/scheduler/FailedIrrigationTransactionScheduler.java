@@ -31,7 +31,7 @@ public class FailedIrrigationTransactionScheduler {
 	@Autowired
 	private ApplicationConfig applicationConfig;
 	
-	@Scheduled(fixedRate = 5*60*1000)
+	@Scheduled(fixedRate = 1*60*1000)
 	public void ExecuteIrrigationTransactions() {
 		
 		Set<IrrigationTransaction> failedIrrigationTransactions = irrigationTransactionRepository.findFailedIrrigationTransactions(applicationConfig.getIrrigationFailedTransactionTrialsConfig());
@@ -52,7 +52,6 @@ public class FailedIrrigationTransactionScheduler {
 					
 				}else {
 					irrigationTransaction.setTrials(irrigationTransaction.getTrials()+1);
-					irrigationTransaction.setStatus(IrrigationTransactionStatus.FAILED);
 					
 					if(irrigationTransaction.getTrials() == applicationConfig.getIrrigationFailedTransactionTrialsConfig()) {
 						

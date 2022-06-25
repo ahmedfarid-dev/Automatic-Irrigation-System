@@ -36,6 +36,8 @@ public class IrrigationDataLoader implements CommandLineRunner {
 		
 		loadUseCase1Data();
 		loadUseCase2Data();
+		loadUseCase3Data();
+		
 	}
 
 	private void loadCropData() {
@@ -76,10 +78,15 @@ public class IrrigationDataLoader implements CommandLineRunner {
 			plot.setOwnerName("Ahmed abd el kareem");
 			plot.setArea(70);
 			plot.setLastIrragtionDate(LocalDateTime.now());
+			
+			//plot sensor
+			PlotSensor plotSensor = new PlotSensor();
+			plotSensor.setAvailable(true);
+			plot.setPlotSensor(plotSensor);
 		
 			//plot configurations
 			PlotConfiguration plotConfiguration = new PlotConfiguration();
-			Crop crop = cropRepository.findByName("tomatos").get();
+			Crop crop = cropRepository.findByName("Sugarcane").get();
 			plotConfiguration.setCrop(crop);
 			plotConfiguration.setPlot(plot);
 			plotConfiguration.setCurrentConfig(true);
@@ -90,46 +97,7 @@ public class IrrigationDataLoader implements CommandLineRunner {
 
 			plot.setPlotConfigurations(Set.of(plotConfiguration));
 			
-			//plot irrigation transaction history
-			IrrigationTransaction irrigationTransaction1 = new IrrigationTransaction();
-			irrigationTransaction1.setPlot(plot);
-			irrigationTransaction1.setIrragtionDate(LocalDateTime.now().minusMinutes(5));
-			irrigationTransaction1.setStatus(IrrigationTransactionStatus.SUCCEDED);
-			irrigationTransaction1.setTrials(0);
-			
-			IrrigationTransaction irrigationTransaction2 = new IrrigationTransaction();
-			irrigationTransaction2.setPlot(plot);
-			irrigationTransaction2.setIrragtionDate(LocalDateTime.now().minusMinutes(10));
-			irrigationTransaction2.setStatus(IrrigationTransactionStatus.SUCCEDED);
-			irrigationTransaction2.setTrials(0);
-			
-			IrrigationTransaction irrigationTransaction3 = new IrrigationTransaction();
-			irrigationTransaction3.setPlot(plot);
-			irrigationTransaction3.setIrragtionDate(LocalDateTime.now().minusDays(2));
-			irrigationTransaction3.setStatus(IrrigationTransactionStatus.FAILED);
-			irrigationTransaction3.setTrials(1);
-			
-			plot.setIrrigationTransactions(Set.of(irrigationTransaction1,irrigationTransaction2,irrigationTransaction3));
-			
-			//plot sensor
-			PlotSensor plotSensor = new PlotSensor();
-			plotSensor.setAvailable(false);
-			
-			plot.setPlotSensor(plotSensor);
-			
 			plotRepository.save(plot);
-
-			
-			//plot Alerts - old alerts for display purposes
-			PlotAlert plotAlert1 = new PlotAlert();
-			plotAlert1.setCreationDate(LocalDateTime.now().minusDays(2).plusMinutes(15));
-			plotAlert1.setPlot(plot);
-			plotAlert1.setIrrigationTransaction(irrigationTransaction3);
-
-		
-			plotAlertRepository.save(plotAlert1);
-			
-			System.out.println(plotRepository.count());
 	}
 	
 	private void loadUseCase2Data() {
@@ -139,9 +107,65 @@ public class IrrigationDataLoader implements CommandLineRunner {
 		plot.setArea(80);
 		plot.setOwnerName("hany ahmed");
 		plot.setLastIrragtionDate(LocalDateTime.now());
-		plot.setNextIrragtionDate(LocalDateTime.now().plusMinutes(10));
+		
+		//plot sensor
+		PlotSensor plotSensor = new PlotSensor();
+		plotSensor.setAvailable(false);
+		plot.setPlotSensor(plotSensor);
+		
+		//plot configurations
+		PlotConfiguration plotConfiguration = new PlotConfiguration();
+		Crop crop = cropRepository.findByName("SugarCane").get();
+		plotConfiguration.setCrop(crop);
+		plotConfiguration.setPlot(plot);
+		plotConfiguration.setCurrentConfig(true);
+		plotConfiguration.setIrrigationRate(crop.getIrrigationRate());
+		plotConfiguration.setWaterAmount(crop.getWaterAmountUnit()*plot.getArea());
+		
+		plot.setNextIrragtionDate(LocalDateTime.now().plusMinutes(plotConfiguration.getIrrigationRate()));
+		
+		plot.setPlotConfigurations(Set.of(plotConfiguration));
 		
 		plotRepository.save(plot);
-		System.out.println(plotRepository.count());
+	}
+
+	private void loadUseCase3Data() {
+		
+		Plot plot = new Plot();
+		
+		plot.setLocation("aswan,nouba");
+		plot.setArea(60);
+		plot.setOwnerName("edrees mohamed");
+		plot.setLastIrragtionDate(LocalDateTime.now());
+		
+		//plot sensor
+		PlotSensor plotSensor = new PlotSensor();
+		plotSensor.setAvailable(true);
+		plot.setPlotSensor(plotSensor);
+		
+		//plot configurations
+		PlotConfiguration plotConfiguration = new PlotConfiguration();
+		Crop crop = cropRepository.findByName("wheat").get();
+		plotConfiguration.setCrop(crop);
+		plotConfiguration.setPlot(plot);
+		plotConfiguration.setCurrentConfig(true);
+		plotConfiguration.setIrrigationRate(crop.getIrrigationRate());
+		plotConfiguration.setWaterAmount(crop.getWaterAmountUnit()*plot.getArea());
+		
+		plot.setNextIrragtionDate(LocalDateTime.now().plusMinutes(plotConfiguration.getIrrigationRate()));
+		
+		plot.setPlotConfigurations(Set.of(plotConfiguration));
+		
+		//plot irrigation transaction history
+		IrrigationTransaction irrigationTransaction = new IrrigationTransaction();
+		irrigationTransaction.setPlot(plot);
+		irrigationTransaction.setIrragtionDate(LocalDateTime.now().minusMinutes(5));
+		irrigationTransaction.setStatus(IrrigationTransactionStatus.FAILED);
+		irrigationTransaction.setTrials(2);
+		
+		plot.setIrrigationTransactions(Set.of(irrigationTransaction));
+		
+		plotRepository.save(plot);
+		
 	}
 }
