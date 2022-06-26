@@ -3,7 +3,7 @@ package com.bankmisr.service;
 import org.springframework.stereotype.Component;
 import com.bankmisr.data.model.IrrigationTransaction;
 import com.bankmisr.data.model.PlotConfiguration;
-import com.bankmisr.scheduler.IrrigationTransactionScheduler;
+import com.bankmisr.service.scheduler.IrrigationTransactionScheduler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

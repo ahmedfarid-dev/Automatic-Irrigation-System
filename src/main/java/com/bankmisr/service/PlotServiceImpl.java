@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.bankmisr.common.exception.ResourceNotFoundException;
 import com.bankmisr.controller.payload.PlotDto;
 import com.bankmisr.data.model.Crop;
 import com.bankmisr.data.model.Plot;
@@ -17,7 +18,7 @@ import com.bankmisr.data.model.PlotConfiguration;
 import com.bankmisr.data.model.PlotSensor;
 import com.bankmisr.data.repositories.CropRepository;
 import com.bankmisr.data.repositories.PlotRepository;
-import com.bankmisr.exception.ResourceNotFoundException; 
+
 
 @Service
 public class PlotServiceImpl implements PlotService {

@@ -5,7 +5,7 @@ import java.util.List;
 import com.bankmisr.controller.payload.PlotDto;
 import com.bankmisr.data.model.Plot;
 
-public interface PlotService {
+public interface PlotService extends CommonService{
 	
 	List<Plot> getAllPlots();
 	

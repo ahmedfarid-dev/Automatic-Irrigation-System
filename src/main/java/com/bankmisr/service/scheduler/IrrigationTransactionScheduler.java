@@ -1,4 +1,4 @@
-package com.bankmisr.scheduler;
+package com.bankmisr.service.scheduler;
 
 
 import java.time.LocalDateTime;
@@ -9,17 +9,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import com.bankmisr.common.util.Constants;
 import com.bankmisr.data.enums.IrrigationTransactionStatus;
 import com.bankmisr.data.model.IrrigationTransaction;
 import com.bankmisr.data.model.Plot;
 import com.bankmisr.data.model.PlotConfiguration;
 import com.bankmisr.data.repositories.IrrigationTransactionRepository;
 import com.bankmisr.data.repositories.PlotRepository;
+import com.bankmisr.service.CommonService;
 import com.bankmisr.service.PlotSensorIntegration;
 
 @Component
 @Transactional
-public class IrrigationTransactionScheduler {
+public class IrrigationTransactionScheduler implements CommonService{
 	
 	private static final Logger log = LoggerFactory.getLogger(IrrigationTransactionScheduler.class);
 	
@@ -32,7 +35,7 @@ public class IrrigationTransactionScheduler {
 	@Autowired
 	IrrigationTransactionRepository irrigationTransactionRepository;
 
-	@Scheduled(fixedRate = 5*60*1000)
+	@Scheduled(fixedRate = IRRIGATION_TRANSACTION_SCHEDULER_FIXED_RATE)
 	public void ExecuteIrrigationTransactions() {
 		
 		Set<Plot> plots = plotRepository.findPlotsToBeIrrigated(LocalDateTime.now().minusMinutes(5),LocalDateTime.now().plusSeconds(60));

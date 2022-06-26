@@ -34,9 +34,9 @@ public class IrrigationDataLoader implements CommandLineRunner {
 		
 		loadCropData();
 		
-		loadUseCase1Data();
-		loadUseCase2Data();
-		loadUseCase3Data();
+		loadTestCase1Data();
+		loadTestCase2Data();
+		loadTestCase3Data();
 		
 	}
 
@@ -71,7 +71,7 @@ public class IrrigationDataLoader implements CommandLineRunner {
 		cropRepository.save(crop);	
 	}
 
-	private void loadUseCase1Data() {
+	private void loadTestCase1Data() {
 			Plot plot = new Plot();
 			
 			plot.setLocation("Giza,Kerdasa");
@@ -100,7 +100,7 @@ public class IrrigationDataLoader implements CommandLineRunner {
 			plotRepository.save(plot);
 	}
 	
-	private void loadUseCase2Data() {
+	private void loadTestCase2Data() {
 		Plot plot = new Plot();
 		
 		plot.setLocation("Dakahlia,mansoura");
@@ -115,7 +115,7 @@ public class IrrigationDataLoader implements CommandLineRunner {
 		
 		//plot configurations
 		PlotConfiguration plotConfiguration = new PlotConfiguration();
-		Crop crop = cropRepository.findByName("SugarCane").get();
+		Crop crop = cropRepository.findByName("Sugarcane").get();
 		plotConfiguration.setCrop(crop);
 		plotConfiguration.setPlot(plot);
 		plotConfiguration.setCurrentConfig(true);
@@ -129,7 +129,7 @@ public class IrrigationDataLoader implements CommandLineRunner {
 		plotRepository.save(plot);
 	}
 
-	private void loadUseCase3Data() {
+	private void loadTestCase3Data() {
 		
 		Plot plot = new Plot();
 		

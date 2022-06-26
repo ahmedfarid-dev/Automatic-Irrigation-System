@@ -1,4 +1,4 @@
-package com.bankmisr.exception;
+package com.bankmisr.common.exception;
 
 public class ResourceNotFoundException extends RuntimeException   
 {  

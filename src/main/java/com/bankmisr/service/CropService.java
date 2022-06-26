@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.bankmisr.data.model.Crop;
 
-public interface CropService {
+public interface CropService extends CommonService{
 	
 	List<Crop> getAllCropss();
 	

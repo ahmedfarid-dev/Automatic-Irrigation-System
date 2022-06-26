@@ -1,4 +1,4 @@
-package com.bankmisr.scheduler;
+package com.bankmisr.service.scheduler;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -6,9 +6,11 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import com.bankmisr.config.ApplicationConfig;
+
+import com.bankmisr.common.util.Constants;
 import com.bankmisr.data.enums.IrrigationTransactionStatus;
 import com.bankmisr.data.model.IrrigationTransaction;
 import com.bankmisr.data.model.PlotAlert;
@@ -18,7 +20,7 @@ import com.bankmisr.service.PlotSensorIntegration;
 
 @Component
 @Transactional
-public class FailedIrrigationTransactionScheduler {
+public class FailedIrrigationTransactionScheduler implements Constants{
 	
 	private static final Logger log = LoggerFactory.getLogger(FailedIrrigationTransactionScheduler.class);
 	
@@ -28,13 +30,13 @@ public class FailedIrrigationTransactionScheduler {
 	@Autowired
 	private PlotSensorIntegration plotSensorIntegration;
 	
-	@Autowired
-	private ApplicationConfig applicationConfig;
+	@Value("${irrigation.failed.transactions.trials}")
+	private int irrigationFailedTransactionTrials;
 	
-	@Scheduled(fixedRate = 1*60*1000)
+	@Scheduled(fixedRate = FAILED_IRRIGATION_TRANSACTION_SCHEDULER_FIXED_RATE)
 	public void ExecuteIrrigationTransactions() {
 		
-		Set<IrrigationTransaction> failedIrrigationTransactions = irrigationTransactionRepository.findFailedIrrigationTransactions(applicationConfig.getIrrigationFailedTransactionTrialsConfig());
+		Set<IrrigationTransaction> failedIrrigationTransactions = irrigationTransactionRepository.findFailedIrrigationTransactions(irrigationFailedTransactionTrials);
 		
 		if(failedIrrigationTransactions.isEmpty()) {
 			log.info("No Failed Transactions to handle");
@@ -53,7 +55,7 @@ public class FailedIrrigationTransactionScheduler {
 				}else {
 					irrigationTransaction.setTrials(irrigationTransaction.getTrials()+1);
 					
-					if(irrigationTransaction.getTrials() == applicationConfig.getIrrigationFailedTransactionTrialsConfig()) {
+					if(irrigationTransaction.getTrials() == irrigationFailedTransactionTrials) {
 						
 						PlotAlert plotAlert = new PlotAlert();
 						plotAlert.setCreationDate(LocalDateTime.now());

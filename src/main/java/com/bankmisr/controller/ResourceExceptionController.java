@@ -5,7 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.bankmisr.exception.ResourceNotFoundException;
+import com.bankmisr.common.exception.ResourceNotFoundException;
+
 
 @ControllerAdvice
 public class ResourceExceptionController {
